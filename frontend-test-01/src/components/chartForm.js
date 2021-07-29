@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -8,9 +9,16 @@ import DialogContent from "@material-ui/core/DialogContent";
 // import DialogTitle from "@material-ui/core/DialogTitle";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
+import NewPoint from "./newPoint";
 
 export default function FormDialog() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+
+  const [countPoints, setCountPoints] = useState(1);
+
+  const addNewPoint = () => {
+    setCountPoints(countPoints + 1);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -18,15 +26,8 @@ export default function FormDialog() {
 
   const handleClose = () => {
     setOpen(false);
+    setCountPoints(1);
   };
-
-  // let oneMorePoint = false;
-
-  // const handleAddMoreInput = () => {
-  //   this.setState({
-  //     oneMorePoint: true,
-  //   });
-  // };
 
   return (
     <div>
@@ -46,46 +47,17 @@ export default function FormDialog() {
             type="text"
             fullWidth
           />
-          <div className="point-box">
-            <TextField
-              id="xValue"
-              label="X Value"
-              type="text"
-              style={{ margin: "10px 5px 0 0 " }}
-            />
-            <TextField
-              id="yValue"
-              label="Y Value"
-              type="text"
-              style={{ margin: "10px 0 0 5px " }}
-            />
-          </div>
-          {/* {this.state.oneMorePoint ? (
-            <div className="point-box">
-              <TextField
-                id="xValue"
-                label="X Value"
-                type="text"
-                style={{ margin: "10px 5px 0 0 " }}
-              />
-              <TextField
-                id="yValue"
-                label="Y Value"
-                type="text"
-                style={{ margin: "10px 0 0 5px " }}
-              />
-            </div>
-          ) : (
-            console.log("oneMorePoint false")
-          )} */}
+          {[...Array(countPoints)].map(() => {
+            return <NewPoint></NewPoint>;
+          })}
           <Button
             variant="contained"
             color="primary"
             fullWidth
             style={{ margin: "15px 0 0 0 " }}
             onClick={() => {
-              console.log("add new point");
-              // _onButtonClick();
+              console.log(countPoints);
+              addNewPoint();
             }}
           >
             <AddIcon style={{ color: "white" }}></AddIcon>

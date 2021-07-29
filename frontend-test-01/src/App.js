@@ -1,5 +1,5 @@
 import delfos_logo from "./images/delfos_Intelligent_maintenance.png";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@material-ui/core/Box";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -62,7 +62,7 @@ const chartOptions2 = {
     gridLineWidth: 0,
   },
   xAxis: {
-    categories: ["Apples", "Bananas", "Oranges"],
+    categories: ["1", "2", "3"],
   },
   series: [
     {
@@ -73,18 +73,31 @@ const chartOptions2 = {
 };
 
 const arrCharts = [chartOptions, chartOptions2];
+
 function App() {
-  const [searchData, setSearchData] = useState(null);
+  const [searchData, setSearchData] = useState("");
+  const [displaySearchData, setDisplaySearchData] = useState("");
 
   const getSearchData = (val) => {
     setSearchData(val.target.value);
-    console.log(searchData);
   };
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      console.log(searchData);
+      setDisplaySearchData(searchData);
+    }, 100);
+    return () => clearTimeout(timeOutId);
+  }, [searchData]);
 
   const [popover, setPopover] = useState(null);
   const openPopover = (event) => {
     setPopover(event.currentTarget);
   };
+
+  // const submitHandler = (event) => {
+  //   event.preventDefault();
+  // };
 
   return (
     <div>
@@ -107,54 +120,60 @@ function App() {
                   variant="outlined"
                   fullWidth
                   onChange={getSearchData}
+                  onClick={getSearchData}
                 />
               )}
             />
+            <p>{displaySearchData}</p>
           </Grid>
         </Grid>
       </div>
       <div className="main-info">
-        <Grid item xs={12} sm={12} md={12}>
-          <Box className="info-box">
-            <div className="chart-info">
-              {/* <p>{chartOptions.title.text}</p> */}
-              <div className="widget-name">
-                <p>Widget 01</p>
-              </div>
-              <div className="threeDots-menu">
-                <MoreVertIcon onClick={openPopover} />
-              </div>
-              <Popover
-                open={Boolean(popover)}
-                anchorEl={popover}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                onClose={() => {
-                  setPopover(null);
-                }}
-              >
-                <Button variant="contained" color="primary">
-                  Edit
-                </Button>
-                <Button variant="contained" color="secondary">
-                  Delete
-                </Button>
-              </Popover>
+        {arrCharts.map((chart) => (
+          <Grid>
+            <Grid item xs={12} sm={12} md={12}>
+              <Box className="info-box">
+                <div className="chart-info">
+                  <div className="widget-name">
+                    <p>{chart.title.text}</p>
+                  </div>
+                  <div className="threeDots-menu">
+                    <MoreVertIcon onClick={openPopover} />
+                  </div>
+                  <Popover
+                    open={Boolean(popover)}
+                    anchorEl={popover}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "left",
+                    }}
+                    onClose={() => {
+                      setPopover(null);
+                    }}
+                  >
+                    <Button variant="contained" color="primary">
+                      Edit
+                    </Button>
+                    <Button variant="contained" color="secondary">
+                      Delete
+                    </Button>
+                  </Popover>
+                </div>
+
+                <div className="chart">
+                  <HighchartsReact highcharts={Highcharts} options={chart} />
+                </div>
+              </Box>
+            </Grid>
+            <div className="add-chart-btn">
+              <Form></Form>
             </div>
-            <div className="chart">
-              <HighchartsReact highcharts={Highcharts} options={chartOptions} />
-            </div>
-          </Box>
-        </Grid>
-        <div className="add-chart-btn">
-          <Form></Form>
-        </div>
+          </Grid>
+        ))}
       </div>
     </div>
   );
